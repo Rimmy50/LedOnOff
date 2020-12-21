@@ -30,7 +30,7 @@ func OnOff(w http.ResponseWriter, req *http.Request) {
 	exec.Command("python", "switch.py", params["state"]).Run()
 
 	var newLed State
-	_ = json.NewDecoder(req.Body).Decode(&newLed)
+	// _ = json.NewDecoder(req.Body).Decode(&newLed)
 	newLed.STATE = params["state"]
 
 	led = append(led[:0], newLed)
@@ -46,6 +46,6 @@ func main() {
 
 	r.HandleFunc("/switch", GetState).Methods("GET")
 	r.HandleFunc("/switch/{state}", OnOff).Methods("POST")
-
+	
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
