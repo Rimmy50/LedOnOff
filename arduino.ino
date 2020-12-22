@@ -1,9 +1,9 @@
 int fromPi = 0;
 
-int LED = 3;
+int LED = 8;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   pinMode(LED, OUTPUT);
 }
@@ -20,11 +20,11 @@ void loop() {
     */
 
     
-    if (fromPi == 'O') {
+    if (fromPi == '1') {
       digitalWrite(LED, HIGH);
     }
 
-    if (fromPi == 'F') {
+    if (fromPi == '0') {
       digitalWrite(LED, LOW);
     }
     
