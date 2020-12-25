@@ -1,4 +1,4 @@
-# Backend for Controlling an LED Strip
+# Backend for Controlling a WS2812B LED Strip
 
 ### Setup
 
