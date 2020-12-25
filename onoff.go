@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -32,9 +31,9 @@ func setColor(w http.ResponseWriter, req *http.Request) {
 
 	for i := 0; i < len(led.COLORS); i++ {
 
-		val := fmt.Sprintf("%x", led.COLORS[i])
+		//val := fmt.Sprintf("%x", led.COLORS[i])
 
-		_, err := ser.Write([]byte(val))
+		_, err := ser.Write([]byte(led.COLORS[i]))
 		if err != nil {
 			log.Fatal(err)
 		}
