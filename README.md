@@ -20,7 +20,7 @@ Your LED Strip backend is now being hosted on `http://localhost:8080`.
  "colors": [a, b, c, d, e...]
 }
 ```
-where a, b, c, d, e... are strings that consist of one hex color in form "#ABCDEF". Each element represents the color of the led at the index position of that string.
+where a, b, c, d, e... are strings that consist of one hex color in form "#ABCDEF". Each element represents the color of the led at the index position of that element.
 
 #### setcolor
 `http://localhost:8080/setcolor` is a POST request, which requires you to send a json in the same format as the getcolor request.
