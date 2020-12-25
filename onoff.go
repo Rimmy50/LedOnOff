@@ -10,7 +10,7 @@ import (
 )
 
 type ledState struct {
-	COLORS []int `json:"colors,omitempty"`
+	COLORS []string `json:"colors,omitempty"`
 }
 
 // Stores the state of the LED at all times
@@ -31,9 +31,9 @@ func setColor(w http.ResponseWriter, req *http.Request) {
 
 	for i := 0; i < len(led.COLORS); i++ {
 
-		//val := fmt.Sprintf("%x", led.COLORS[i])
+		val := led.COLORS[i][1:]
 
-		_, err := ser.Write([]byte(led.COLORS[i]))
+		_, err := ser.Write([]byte(val))
 		if err != nil {
 			log.Fatal(err)
 		}
