@@ -9,4 +9,15 @@ Open the `onoff.go` file. Replace the `"COM4"` in `var ser, err = serial.OpenPor
 In terminal, navigate to the directory containing your `onoff.go` file. Type `go run onoff.go` into your terminal and hit enter.
 
 Your LED Strip backend is now being hosted on `http://localhost:8080`.
+
+
+### Requests
+
+The go server accepts two requests. One is `http://localhost:8080/getstate`, a GET request which returns a json in this format:
+```
+{
+ "colors": [a, b, c, d, e...]
+}
+```
+where a, b, c, d, e... are 
  
