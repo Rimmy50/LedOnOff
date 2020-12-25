@@ -12,12 +12,21 @@ Your LED Strip backend is now being hosted on `http://localhost:8080`.
 
 
 ### Requests
+#### getcolor
 
-The go server accepts two requests. One is `http://localhost:8080/getstate`, a GET request which returns a json in this format:
+`http://localhost:8080/getcolor` is a GET request which returns a json in this format:
 ```
 {
  "colors": [a, b, c, d, e...]
 }
 ```
-where a, b, c, d, e... are 
- 
+where a, b, c, d, e... are strings that consist of one hex color in form #ABCDEF. Each element represents the color of the led at the index position of that string.
+
+#### setcolor
+`http://localhost:8080/setcolor` is a POST request, which requires you to send a json in the same format as the getcolor request.
+```
+{
+ "colors": [a, b, c, d, e...]
+}
+```
+This request updates the led to display the colors stored in the json.
