@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -9,55 +10,52 @@ import (
 	"github.com/tarm/serial"
 )
 
-// Saves the state of the LED as a string. 1 is on, 0 is off.
-type State struct {
-	STATE string `json:"state,omitempty"`
+type ledState struct {
+	COLORS []int `json:"colors,omitempty"`
 }
 
 // Stores the state of the LED at all times
-var led []State
+var led ledState
 
-// Starts new serial port and opens it
-var c = &serial.Config{Name: "COM4", Baud: 115200}
-var ser, _ = serial.OpenPort(c)
+// Defines new serial port
+var ser, err = serial.OpenPort(&serial.Config{Name: "COM4", Baud: 115200})
 
 // Returns the state of the LED
-func GetState(w http.ResponseWriter, req *http.Request) {
+func getState(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(led)
 }
 
-// Acts as a light switch for the LED. Pass in state as 1 to turn on, 0 to turn off
-func OnOff(w http.ResponseWriter, req *http.Request) {
-	params := mux.Vars(req)
+func setColor(w http.ResponseWriter, req *http.Request) {
+	_ = json.NewDecoder(req.Body).Decode(&led)
 
-	// Sets the state of the LED to the requested state (params["state"])
-	_, err := ser.Write([]byte(params["state"]))
-	if err != nil {
-		log.Fatal(err)
+	ser.Write([]byte("^"))
+
+	for i := 0; i < len(led.COLORS); i++ {
+
+		val := fmt.Sprintf("%x", led.COLORS[i])
+
+		_, err := ser.Write([]byte(val))
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
-	var newLed State
-	//_ = json.NewDecoder(req.Body).Decode(&newLed)
-	newLed.STATE = params["state"]
-
-	led = append(led[:0], newLed)
+	ser.Write([]byte("$00"))
 
 	json.NewEncoder(w).Encode(led)
 }
 
 func main() {
-	r := mux.NewRouter()
-
-	// Initializes the LED as off
-	led = append(led, State{STATE: "0"})
-
-	_, err := ser.Write([]byte("0"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	r.HandleFunc("/switch", GetState).Methods("GET")
-	r.HandleFunc("/switch/{state}", OnOff).Methods("POST")
+	r := mux.NewRouter()
+
+	led = ledState{COLORS: nil}
+
+	r.HandleFunc("/getcolor", getState).Methods("GET")
+	r.HandleFunc("/setcolor", setColor).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

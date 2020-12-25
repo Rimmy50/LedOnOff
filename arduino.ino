@@ -1,40 +1,40 @@
-int fromPi = 0;
+#include "FastLED.h"
 
-int LED = 8;
+#define NUM_LEDS 150
+#define DATA_PIN 8
+
+CRGB leds[NUM_LEDS];
+bool expectColor = false;
+int index = 0;
 
 void setup() {
   Serial.begin(115200);
 
-  pinMode(LED, OUTPUT);
+  FastLED.addLeds<WS2812B, DATA_PIN>(leds, NUM_LEDS);
 }
 
 void loop() {
   if (Serial.available() > 0) { 
-    fromPi = Serial.read();
-
-    //Serial.print("Test");
-
-    /*
-    Serial.print("I received: ");
-    Serial.print(fromPi, DEC);
-    */
-
+    if (expectColor) {
+      byte data[3] = Serial.read();
+      
+      if (data[0] == '$') {
+        expectColor = false;
+        index = 0;
+      } 
+      
+      else {
+        leds[index] = (*((CRGB*) &data));
+        index++;
+      }  
+        
+    } 
     
-    if (fromPi == '1') {
-      digitalWrite(LED, HIGH);
+    else {
+      if (Serial.read() == '^') {
+        expectColor = true;
+      }
     }
-
-    if (fromPi == '0') {
-      digitalWrite(LED, LOW);
-    }
-    
-    
-    /*
-    digitalWrite(LED, HIGH);
-    delay(1000);
-    digitalWrite(LED, LOW);
-    delay(1000);
-    */
     
   }
   
