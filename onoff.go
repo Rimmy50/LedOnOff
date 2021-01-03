@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/tarm/serial"
@@ -27,19 +28,37 @@ func getState(w http.ResponseWriter, req *http.Request) {
 func setColor(w http.ResponseWriter, req *http.Request) {
 	_ = json.NewDecoder(req.Body).Decode(&led)
 
-	ser.Write([]byte("^"))
+	data := []byte{}
 
 	for i := 0; i < len(led.COLORS); i++ {
 
 		val := led.COLORS[i][1:]
 
-		_, err := ser.Write([]byte(val))
+		a, err := strconv.ParseInt(val[0:2], 16, 64)
 		if err != nil {
 			log.Fatal(err)
 		}
+		x := byte(a)
+
+		b, err := strconv.ParseInt(val[2:4], 16, 64)
+		if err != nil {
+			log.Fatal(err)
+		}
+		y := byte(b)
+
+		c, err := strconv.ParseInt(val[4:6], 16, 64)
+		if err != nil {
+			log.Fatal(err)
+		}
+		z := byte(c)
+
+		data = append(data, x, y, z)
 	}
 
-	ser.Write([]byte("$00"))
+	_, err = ser.Write(data)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	json.NewEncoder(w).Encode(led)
 }
