@@ -18,7 +18,7 @@ type ledState struct {
 var led ledState
 
 // Defines new serial port
-var ser, err = serial.OpenPort(&serial.Config{Name: "COM4", Baud: 115200})
+var ser, err = serial.OpenPort(&serial.Config{Name: "COM5", Baud: 115200})
 
 // Returns the state of the LED
 func getState(w http.ResponseWriter, req *http.Request) {
